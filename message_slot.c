@@ -190,14 +190,14 @@ static int device_release(struct inode * inode, struct file * file)
 
 static long device_ioctl(struct file * file, uint ioctl_cmd, ulong ioctl_param)
 {
-    spin_lock(&lock);
+    // spin_lock(&lock);
     printk(KERN_DEBUG "starting %s\n", __func__);
     
     switch(ioctl_cmd) {
     
     case MSG_SLOT_CHANNEL:
         if (file->private_data == NULL || ioctl_param == 0) {
-            spin_unlock(&lock);
+            // spin_unlock(&lock);
             return -EINVAL;
         }
         file_data_t * file_data = (file_data_t *)file->private_data;
@@ -208,20 +208,20 @@ static long device_ioctl(struct file * file, uint ioctl_cmd, ulong ioctl_param)
             file_data->current_channel = &query_res->channel;
             printk(KERN_DEBUG "in %s, line: %d\n", __func__, __LINE__);
             printk(KERN_DEBUG "finnishing %s, channel already existed\n", __func__);
-            spin_unlock(&lock);
+            // spin_unlock(&lock);
             return 0;
         }
         else {
             node_t * new_node = NULL;
-            int res;
+            int res = 0;
             printk(KERN_DEBUG "1\n");
             if ((res = alloc_node(&new_node)) != 0) {
                 printk(KERN_ERR "error alloc node\n");
                 printk(KERN_DEBUG "finnishing %s\n", __func__);
-                spin_unlock(&lock);
+                // spin_unlock(&lock);
                 return res;
             }
-            printk(KERN_DEBUG "2\n");
+            printk(KERN_DEBUG "in line %d, new_node: %p\n", __LINE__, new_node);
             new_node->channel.id = ioctl_param;
             printk(KERN_DEBUG "3\n");
             printk(KERN_DEBUG "4\n");
@@ -232,7 +232,7 @@ static long device_ioctl(struct file * file, uint ioctl_cmd, ulong ioctl_param)
             printk(KERN_DEBUG "7\n");
             file_data->current_channel = &new_node->channel;
             printk(KERN_DEBUG "finnishing %s, alloced new channel\n", __func__);
-            spin_unlock(&lock);
+            // spin_unlock(&lock);
             return 0;
         }
     default:
@@ -240,7 +240,7 @@ static long device_ioctl(struct file * file, uint ioctl_cmd, ulong ioctl_param)
         return -EINVAL;
     }
     printk(KERN_DEBUG "finnishing %s\n", __func__);
-    spin_unlock(&lock);
+    // spin_unlock(&lock);
     return 0;
 }
 
@@ -321,7 +321,7 @@ static ssize_t device_write(struct file * file, const char * buffer, size_t size
 
 
 void init_channel(channel_t * channel) {
-    *channel = (channel_t){.id = 0, .len = 0, .msg = NULL};
+    *channel = (channel_t){.id = 0, .len = 0, .msg = {0}};
 }
 
 // void init_node(node_t * node) {
