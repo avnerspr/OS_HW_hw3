@@ -30,12 +30,12 @@ int main(int argc, char* argv[]) {
     fprintf(stdout, "open device succsess\n");
 
 
-    // if (ioctl(fd, MSG_SLOT_CHANNEL, atoi(argv[2])) == -1) {
-    //     fprintf(stderr, "error doing ioctl to device: %s\n", strerror(errno));
-    //     close(fd);
-    //     return EXIT_FAILURE;
-    // }
-    // fprintf(stdout, "ioctl device succsess\n");
+    if (ioctl(fd, MSG_SLOT_CHANNEL, atoi(argv[2])) == -1) {
+        fprintf(stderr, "error doing ioctl to device: %s\n", strerror(errno));
+        close(fd);
+        return EXIT_FAILURE;
+    }
+    fprintf(stdout, "ioctl device succsess\n");
 
 
     // if ((amountRead = read(fd, msg, sizeof(msg))) < 0) {
