@@ -29,7 +29,7 @@ typedef struct channel {
 
 typedef struct channel_node_s {
     struct  channel channel;
-    struct node_s * next;
+    struct channel_node_s * next;
 } channel_node_t;
 
 typedef struct minor_node_s {
