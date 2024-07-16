@@ -107,7 +107,7 @@ static minor_node_t* get_minor_node(uint minor) {
         node = node->next;
     }
     /* emplace minor node */
-    node = kalloc(sizeof(minor_node_t), GFP_KERNEL);
+    node = kmalloc(sizeof(minor_node_t), GFP_KERNEL);
     if (node == NULL) {
         return NULL;
     }
@@ -129,7 +129,7 @@ static channel_node_t* get_channel_node(minor_node_t * minor_node, uint32_t id) 
         node = node->next;
     }
     /* Allocate channel node */
-    node = kalloc(sizeof(channel_node_t), GFP_KERNEL);
+    node = kmalloc(sizeof(channel_node_t), GFP_KERNEL);
     if (node == NULL) {
         return NULL;
     }
@@ -145,7 +145,7 @@ static int device_open(struct inode * inode, struct file * file) {
     if (minor_node == NULL) {
         return -ENOMEM;
     }
-    file_data_t * file_data = kalloc(sizeof(file_data_t), GFP_KERNEL);
+    file_data_t * file_data = kmalloc(sizeof(file_data_t), GFP_KERNEL);
     if (file_data == NULL) {
         return -ENOMEM;
     }
