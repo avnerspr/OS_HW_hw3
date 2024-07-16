@@ -181,6 +181,7 @@ static int device_release(struct inode * inode, struct file * file)
         // *(file_data_t*)(file->private_data) = (file_data_t){0};
         // printk(KERN_DEBUG "kfree file->private_data, unfound node\n");
         printk(KERN_DEBUG "kfree file->private_data, unfound node\n");
+        printk(KERN_DEBUG "in %s, kfree address: %p\n", __func__, file->private_data);
         kfree(file->private_data);
     }
     printk(KERN_DEBUG "finnishing %s\n", __func__);
