@@ -250,7 +250,6 @@ static ssize_t device_read(struct file * file, char * buffer, size_t size, loff_
     ulong ret = 0;
     file_data_t * file_data = (file_data_t *)file->private_data;
     channel_t * channel = file_data->current_channel;
-    loff_t off = 0;
     if (channel->id == 0) {
         spin_unlock(&lock);
         return -EINVAL;
@@ -265,20 +264,9 @@ static ssize_t device_read(struct file * file, char * buffer, size_t size, loff_
     }
     printk(KERN_DEBUG "in %s, line: %d\n", __func__, __LINE__);
 
-    ret = copy_from_user(&off, offset, sizeof(off));
-    if (ret != sizeof(off) && ret != 0) {
-        printk(KERN_DEBUG "copy_fron user return value for offset: %lu\n", ret);
-        spin_unlock(&lock);
-        return -EFAULT;
-    }
-
-    if (ret == 0) {
-        off = 0;
-    }
-    printk(KERN_DEBUG "copy_fron user return value for offset: %lu\n", ret);
 
 
-    if ((ret = copy_to_user(buffer + off, channel->msg, channel->len)) != 0) {
+    if ((ret = copy_to_user(buffer, channel->msg, channel->len)) != 0) {
         printk(KERN_DEBUG "copy_to_user return value for msg: %lu\n", ret);
         spin_unlock(&lock);
         return -EFAULT;
@@ -298,7 +286,6 @@ static ssize_t device_write(struct file * file, const char * buffer, size_t size
     ulong ret = 0;
     file_data_t * file_data = (file_data_t *)file->private_data;
     channel_t * channel = file_data->current_channel;
-    loff_t off = 0;
     if (channel->id == 0) {
         spin_unlock(&lock);
         return -EINVAL;
@@ -308,26 +295,13 @@ static ssize_t device_write(struct file * file, const char * buffer, size_t size
         return -EMSGSIZE;
     }
 
-    ret = copy_from_user(&off, offset, sizeof(off));
-    if (ret != sizeof(off) && ret != 0) {
-        printk(KERN_DEBUG "copy_fron user return value for offset: %lu\n", ret);
-        spin_unlock(&lock);
-        return -EFAULT;
-    }
-    if (ret == 0) {
-        off = 0;
-    }
-    printk(KERN_DEBUG "copy_fron user return value for offset: %lu\n", ret);
-
-
-
     // if (channel->msg != NULL) {
     //     kfree(channel->msg);
     // }
     // if (!(channel->msg = kmalloc(size, GFP_KERNEL))) {
     //     return -ENOMEM;
     // }
-    if ((ret = copy_from_user(channel->msg, buffer + off, size)) != 0) {
+    if ((ret = copy_from_user(channel->msg, buffer, size)) != 0) {
         printk(KERN_DEBUG "copy_fron user return value for msg: %lu\n", ret);
         channel->len = size - ret;
         spin_unlock(&lock);
