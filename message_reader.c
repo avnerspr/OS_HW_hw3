@@ -11,7 +11,6 @@
 
 int main(int argc, char* argv[]) {
 
-    sleep(3);
     int fd = -1;
     int amountRead = 0;
 
