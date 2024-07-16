@@ -131,7 +131,7 @@ module_exit(message_slot_exit);
 static int device_open(struct inode * inode, struct file * file)
 {
 
-    spin_lock(&lock);
+    // spin_lock(&lock);
     printk(KERN_DEBUG "starting %s\n", __func__);
     
     uint minor = iminor(inode);
@@ -139,7 +139,7 @@ static int device_open(struct inode * inode, struct file * file)
     if (device_node == NULL) {
         if (!(device_node = kmalloc(sizeof(device_node), GFP_KERNEL))) {
             printk(KERN_ALERT "my_device: Failed to allocate memory\n");
-            spin_unlock(&lock);
+            // spin_unlock(&lock);
             return -ENOMEM;            
         }
         printk(KERN_DEBUG "in %s, line: %d\n", __func__, __LINE__);
@@ -154,23 +154,20 @@ static int device_open(struct inode * inode, struct file * file)
 
     file_data_t * file_data = NULL;
 
-    if (file->private_data == NULL)
+    if (!(file_data = kmalloc(sizeof(file_data_t), GFP_KERNEL)))
     {
-        if (!(file_data = kmalloc(sizeof(file_data_t), GFP_KERNEL)))
-        {
-            printk(KERN_ALERT "my_device: Failed to allocate memory\n");
-            spin_unlock(&lock);
-            return -ENOMEM;
-        }
-        printk(KERN_DEBUG "in %s, line: %d\n", __func__, __LINE__);
-
-        file_data->current_channel = NULL;
-        file_data->list_head = device_node;
-        file->private_data = (void *)file_data;
+        printk(KERN_ALERT "my_device: Failed to allocate memory\n");
+        // spin_unlock(&lock);
+        return -ENOMEM;
     }
     printk(KERN_DEBUG "in %s, line: %d\n", __func__, __LINE__);
+
+    file_data->current_channel = NULL;
+    file_data->list_head = device_node;
+    file->private_data = (void *)file_data;
+    printk(KERN_DEBUG "in %s, line: %d\n", __func__, __LINE__);
     printk(KERN_DEBUG "finnishing %s\n", __func__);
-    spin_unlock(&lock);
+    // spin_unlock(&lock);
     return 0;
 }
 
@@ -210,8 +207,7 @@ static long device_ioctl(struct file * file, uint ioctl_cmd, ulong ioctl_param)
             printk(KERN_DEBUG "finnishing %s, channel already existed\n", __func__);
             // spin_unlock(&lock);
             return 0;
-        }
-        else {
+        } else {
             node_t * new_node = NULL;
             int res = 0;
             printk(KERN_DEBUG "1\n");
