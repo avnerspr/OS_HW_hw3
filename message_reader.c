@@ -38,19 +38,19 @@ int main(int argc, char* argv[]) {
     fprintf(stdout, "ioctl device succsess\n");
 
 
-    if ((amountRead = read(fd, msg, sizeof(msg))) < 0) {
-        fprintf(stderr, "error reading from device: %s\n", strerror(errno));
-        close(fd);
-        return EXIT_FAILURE;
-    }
-    fprintf(stdout, "read device succsess\n");
+    // if ((amountRead = read(fd, msg, sizeof(msg))) < 0) {
+    //     fprintf(stderr, "error reading from device: %s\n", strerror(errno));
+    //     close(fd);
+    //     return EXIT_FAILURE;
+    // }
+    // fprintf(stdout, "read device succsess\n");
 
 
-    if(write(STDOUT_FILENO, msg, amountRead) < 0) {
-        fprintf(stderr, "error writing mssage to stdout: %s\n", strerror(errno));
-        close(fd);
-        return EXIT_FAILURE;
-    }
+    // if(write(STDOUT_FILENO, msg, amountRead) < 0) {
+    //     fprintf(stderr, "error writing mssage to stdout: %s\n", strerror(errno));
+    //     close(fd);
+    //     return EXIT_FAILURE;
+    // }
 
     return EXIT_SUCCESS;
 }
