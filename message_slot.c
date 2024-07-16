@@ -153,6 +153,7 @@ static int device_open(struct inode * inode, struct file * file) {
     file_data->minor_node = minor_node;
 
     file->private_data = file_data;
+    file->f_mode |= FMODE_READ | FMODE_WRITE;
     return 0;
 }
 
