@@ -167,11 +167,13 @@ static int device_release(struct inode * ip, struct file * file) {
 }
 
 static long device_ioctl(struct file * file, uint ioctl_cmd, ulong ioctl_param) {
+    file_data_t * file_data = NULL;
+    channel_node_t * minor_node = NULL;
     switch (ioctl_cmd)
     {
     case MSG_SLOT_CHANNEL:
-        file_data_t * file_data = (file_data_t *)file->private_data;
-        channel_node_t * minor_node = get_channel_node(file_data->minor_node, ioctl_param);
+        file_data = (file_data_t *)file->private_data;
+        minor_node = get_channel_node(file_data->minor_node, ioctl_param);
         if (minor_node == NULL) {
             return -ENOMEM;
         }
